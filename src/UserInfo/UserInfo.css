@@ -1,0 +1,15 @@
+.userInfo {
+    width: 60%;
+    border: 1px solid #ccc;
+    margin: 20px auto;
+    padding: 0 50px 20px 50px;
+    box-sizing: border-box;
+}
+
+.userInfo__title {
+    text-align: center;
+}
+
+.bold {
+    font-weight: bold;
+}

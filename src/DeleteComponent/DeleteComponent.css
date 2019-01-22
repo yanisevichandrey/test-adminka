@@ -1,0 +1,17 @@
+.deleteBlock {
+    padding: 25px;
+}
+
+.deleteBlock h2 {
+    text-align: center;
+}
+
+.wrapBtns {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 30px;
+}
+
+.btn {
+    width: 150px;
+}

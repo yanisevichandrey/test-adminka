@@ -1,0 +1,35 @@
+.signIn {
+    width: 100%;
+    text-align: center;
+}
+
+.signIn__form {
+    width: 40%;
+    margin: auto;
+}
+
+.signIn__form input {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 5px;
+    border-radius: 3px;
+    border: 1px solid #ccc;
+    font-size: 16px;
+    outline: none;
+}
+
+.signIn__form button {
+    background-color: rgb(17, 64, 117);
+    color: #fff;
+    border: none;
+    border-radius: 3px;
+    font-size: 16px;
+    padding: 8px 40px;
+    cursor: pointer;
+    outline: none;
+}
+
+.signIn__form button:hover {
+    background-color: rgb(13, 48, 87);
+}
+

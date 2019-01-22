@@ -1,26 +1,31 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import './App.css';
+import Header from './Header/Header';
+import Home from './Home/Home';
+import NotFoundPage from './NotFoundPage/NotFoundPage';
+import Products from './Products/Products';
+import SignIn from './SignIn/SignIn';
+import SignUp from './SignUp/SignUp';
+import UserInfo from './UserInfo/UserInfo';
+import axios from './axios-users';
 
 class App extends Component {
+
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
+      <Router>
+        <div className="App">
+          <Header />
+          <Route path="/" exact component={Home} />
+          <Route path="/products" component={Products} />
+          <Route path="/not-found" component={NotFoundPage} />
+          <Route path="/user-info" component={UserInfo} />
+          <Route path="/sign-in" component={SignIn} />
+          <Route path="/sign-up" component={SignUp} />
+          {/* <Route path="/*" component={NotFoundPage} /> */}
+        </div>
+      </Router>
     );
   }
 }

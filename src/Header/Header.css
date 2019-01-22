@@ -1,0 +1,29 @@
+.header {
+    width: 100%;
+    background-color: rgb(17, 64, 117);
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header .links {
+    color: #fff;
+    text-decoration: none;
+    padding: 0px 20px;
+}
+
+.header .menu {
+    display: flex;
+}
+
+.header .menu .links:hover {
+    text-decoration: underline;
+} 
+
+.header .logo {
+    color: #fff;
+    font-weight: bold;
+    font-size: 20px;
+    padding-left: 20px;
+}
