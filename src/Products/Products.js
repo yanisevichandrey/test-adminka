@@ -7,6 +7,7 @@ import Modal from '../Modal/Modal';
 import DeleteComponent from '../DeleteComponent/DeleteComponent';
 import './Products.css';
 import axios from '../axios-users';
+import * as actionCreators from '../store/actionCreators';
 
 class Products extends Component {
 
@@ -21,17 +22,14 @@ class Products extends Component {
     cUser: null
   }
 
-  // deleteProduct = (id) => {
-  //   this.setState({
-  //     products: [...this.state.products.filter(p => p.id !== id)], isOpenModal: false, idProduct: null
-  //   })
-  // }
+  
 
-  async componentDidMount() {
-    const data = await this.getCurrentUser();
-    console.log(data)
-    this.changeCurrentUser(data);
-  }
+  // async componentDidMount() {
+  //   const data = await this.getCurrentUser();
+  //   console.log(data)
+  //   this.props.getCurrentUser()
+  //   this.changeCurrentUser(data);
+  // }
 
   getCurrentUser = () => {
    return axios.get('/currentUser.json')
@@ -74,27 +72,104 @@ class Products extends Component {
     this.setState({ priceProduct: e.target.value })
   }
 
-  // addProduct = () => {
-  //   const newProduct = {
-  //     id: Date.now(),
-  //     name: this.state.nameProduct,
-  //     price: this.state.priceProduct
-  //   }
+  addProduct = () => {
+    let cUser = this.props.currentUser;
+    let cProducts = cUser.products;
+    const newProduct = {
+      id: Date.now(),
+      name: this.state.nameProduct,
+      price: this.state.priceProduct
+    }
 
-  //   this.setState({ products: [...this.state.products, newProduct], isAdd: false, nameProduct: '', priceProduct: '' })
-  // }
+    cProducts = [...cProducts, newProduct];
+    cUser.products = cProducts;
 
-  // editProduct = (id) => {
-  //   const currentProduct = this.state.currentProduct;
-  //   let product = {
-  //     ...this.state.products[currentProduct]
-  //   }
-  //   product.name = this.state.nameProduct;
-  //   product.price = this.state.priceProduct;
-  //   const products = [...this.state.products];
-  //   products[currentProduct] = product;
-  //   this.setState({ products: products, isEdit: false}) 
-  // }
+    // axios.post('/currentUser.json', cUser)
+    //   .then(res => console.log(res))
+    //   .catch(err => console.log(err));
+
+    this.setState({ 
+      cUser: cUser, 
+      isAdd: false, 
+      nameProduct: '', 
+      priceProduct: '' 
+    })
+
+    this.props.addProduct(cUser)
+    this.updateProducts(cUser)
+  }
+
+  updateProducts = (cUser) => {
+    let users = this.props.users;
+
+    let user;
+    let index;
+    
+    for (let i = 0; i < users.length; i++) {
+      
+      if (users[i].login === cUser.login) {
+        user = users[i];
+        index = i;
+        break;
+      }
+      
+    }
+
+    console.log(cUser)
+    console.log(user)
+
+    user = cUser;
+
+    // axios.put('/users.json/' + index, cUser)
+    //   .then(res => console.log(res))
+    //   .catch(err => console.log(err));
+
+  }
+
+  deleteProduct = (id) => {
+    let cUser = this.props.currentUser;
+    let cProducts = cUser.products;
+
+    
+    cProducts = [...cProducts.filter(p => p.id !== this.state.idProduct)];
+    cUser.products = cProducts;
+    console.log(cUser)
+
+    // axios.delete('/currentUser.json')
+    //   .then(res => console.log(res))
+    //   .catch(err => console.log(err));
+
+    this.setState({
+      cUser: cUser,
+      isOpenModal: false, 
+      idProduct: null,
+      isDelete: false
+    })
+
+    this.props.deleteProduct(this.state.cUser)
+  }
+
+  editProduct = (id) => {
+
+    let cUser = this.props.currentUser;
+    let cProducts = cUser.products;
+
+    const currentProduct = this.state.currentProduct;
+    let product = {
+      ...cProducts[currentProduct]
+    }
+    product.name = this.state.nameProduct;
+    product.price = this.state.priceProduct;
+    cProducts[currentProduct] = product;
+    cUser.products = cProducts;
+    
+    this.setState({ 
+      cUser: cUser, 
+      isEdit: false
+    }) 
+
+    this.props.editProduct(this.state.cUser)
+  }
 
 
   render() {
@@ -102,31 +177,31 @@ class Products extends Component {
 
       <div className="container" style={{ marginTop: 50 }}>
         <Modal isDelete={this.state.isDelete}>
-          <DeleteComponent hide={this.hideDeleteModal} deleteProduct={() => this.props.onDeleteProduct(this.state.idProduct)} />
+          <DeleteComponent hide={this.hideDeleteModal} deleteProduct={this.deleteProduct} />
         </Modal>
-        <Modal isAdd={this.props.isAdd}>
+        <Modal isAdd={this.state.isAdd}>
           <div className="addProduct">
             <h2>Add product</h2>
             <input type="text" placeholder="Name" value={this.state.nameProduct}  onChange={this.changeNameProduct} />
             <input type="text" placeholder="Price" value={this.state.priceProduct} onChange={this.changePriceProduct} />
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <button className="btn btn-success" onClick={() => this.props.onAddProduct(this.state.nameProduct, this.state.priceProduct, this.state.isAdd)}>Add</button>
-              <button className="btn btn-danger" onClick={this.props.onHideAddModal}>Cancel</button>
+              <button className="btn btn-success" onClick={this.addProduct}>Add</button>
+              <button className="btn btn-danger" onClick={this.hideAddModal}>Cancel</button>
             </div>
           </div>
         </Modal>
         <Modal isEdit={this.state.isEdit}>
           <div className="addProduct">
             <h2>Edit product</h2>
-            <input type="text" placeholder="Name" value={this.state.nameProduct} onChange={this.changeNameProduct} />
-            <input type="text" placeholder="Price" value={this.state.priceProduct} onChange={this.changePriceProduct} />
+            {/* <input type="text" placeholder="Name" value={this.props.currentUser.products[this.state.currentProduct]} onChange={this.changeNameProduct} /> */}
+            {/* <input type="text" placeholder="Price" value={this.props.currentUser.products[this.state.currentProduct].price} onChange={this.changePriceProduct} /> */}
             <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <button className="btn btn-success" onClick={() => this.props.onEditProduct(this.state.currentProduct, this.state.nameProduct, this.state.priceProduct)}>Edit</button>
+              <button className="btn btn-success" onClick={this.editProduct}>Edit</button>
               <button className="btn btn-danger" onClick={this.hideEditModal}>Cancel</button>
             </div>
           </div>
         </Modal>
-        <button className="btn btn-primary add" onClick={this.props.onShowAddModal}>Add product</button>
+        <button className="btn btn-primary add" onClick={this.showAddModal}>Add product</button>
         <Table striped bordered condensed hover>
           <thead>
             <tr>
@@ -138,7 +213,7 @@ class Products extends Component {
           </thead>
           <tbody>
             {
-              this.state.cUser.products.map((p, index) => {
+              this.props.currentUser && this.props.currentUser.products && this.props.currentUser.products.map((p, index) => {
                 return <tr key={p.id}>
                   <td>{p.id}</td>
                   <td>{p.name}</td>
@@ -158,20 +233,17 @@ class Products extends Component {
 const mapStateToProps = state => {
   return {
     currentUser: state.currentUser,
-    isAdd: state.isAdd,
-    isDelete: state.isDelete
+    users: state.users
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    onAddProduct: (name, price, isAdd) => dispatch({type: actionTypes.ADD_PRODUCT, productData: {name: name, price: price}, isAdd: isAdd}),
-    onHideAddModal: () => dispatch({type: actionTypes.HIDE_ADDMODAL}),
-    onShowAddModal: () => dispatch({type: actionTypes.SHOW_ADDMODAL}),
-    onDeleteProduct: (id) => dispatch({type: actionTypes.DELETE_PRODUCT, id: id}),
-    onEditProduct: (index, nameProduct, priceProduct) => dispatch({type: actionTypes.EDIT_PRODUCT, index: index, nameProduct: nameProduct, priceProduct: priceProduct})
-    // onHideDeleteModal: () => dispatch({type: actionTypes.HIDE_DELETEMODAL}),
-    // onShowDeleteModal: () => dispatch({type: actionTypes.SHOW_DELETEMODAL})
+    // onAddProduct: cUser => dispatch(actionCreators.addProduct(cUser)),
+    getCurrentUser: cUser => dispatch(actionCreators.getCurrentUser(cUser)),
+    addProduct: cUser => dispatch(actionCreators.addProduct(cUser)),
+    deleteProduct: cUser => dispatch(actionCreators.deleteProduct(cUser)),
+    editProduct: cUser => dispatch(actionCreators.editProduct(cUser))
   }
 }
 

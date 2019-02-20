@@ -9,6 +9,8 @@ import SignIn from './SignIn/SignIn';
 import SignUp from './SignUp/SignUp';
 import UserInfo from './UserInfo/UserInfo';
 import axios from './axios-users';
+import { connect } from 'react-redux';
+import * as actionCreators from './store/actionCreators';
 
 class App extends Component {
 
@@ -24,10 +26,28 @@ class App extends Component {
           <Route path="/sign-in" component={SignIn} />
           <Route path="/sign-up" component={SignUp} />
           {/* <Route path="/*" component={NotFoundPage} /> */}
+          {/* <Products 
+            addProduct={this.props.addProduct}
+            deleteProduct={this.props.deleteProduct}
+            editProduct={this.props.editProduct}/> */}
         </div>
       </Router>
     );
   }
 }
 
-export default App;
+const mapStateToProps = state => {
+  return {
+    currentUser: state.currentUser,
+    isAdd: state.isAdd,
+    isDelete: state.isDelete
+  }
+}
+
+const mapDispatchToProps = dispatch => ({
+  
+    
+  
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
