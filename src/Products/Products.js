@@ -1,12 +1,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import * as actionTypes from '../store/actions';
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css';
 import { Table } from 'react-bootstrap';
 import Modal from '../Modal/Modal';
 import DeleteComponent from '../DeleteComponent/DeleteComponent';
 import './Products.css';
-import axios from '../axios-users';
 import * as actionCreators from '../store/actionCreators';
 
 class Products extends Component {
@@ -19,25 +17,24 @@ class Products extends Component {
     nameProduct: '',
     priceProduct: '',
     currentProduct: null,
-    cUser: null
+    cUser: null,
+    products: []
   }
 
-  
-
-  // async componentDidMount() {
-  //   const data = await this.getCurrentUser();
-  //   console.log(data)
-  //   this.props.getCurrentUser()
-  //   this.changeCurrentUser(data);
-  // }
-
-  getCurrentUser = () => {
-   return axios.get('/currentUser.json')
-    .then(res => res.data);
+  componentDidMount() {
+    const savedProducts = JSON.parse(localStorage.getItem('products'));
+    const arr = [];
+    if(savedProducts) {
+      this.props.getProducts(savedProducts)
+    } else {
+      this.props.getProducts(arr)
+    }
   }
 
-  changeCurrentUser = (data) => {
-    this.setState({cUser: data})
+  componentDidUpdate(prevState, prevProps) {
+    if(prevProps.products !== this.props.products) {
+      this.saveToLocalStarage()
+    }
   }
 
   showDeleteModal = (id) => {
@@ -57,7 +54,7 @@ class Products extends Component {
   }
 
   showEditModal = (index) => {
-    this.setState({ isEdit: true, currentProduct: index, isAdd: false, nameProduct: '', priceProduct: '' })
+    this.setState({ isEdit: true, currentProduct: index, isAdd: false, nameProduct: this.props.products[index].name, priceProduct: this.props.products[index].price })
   }
 
   hideEditModal = () => {
@@ -73,106 +70,95 @@ class Products extends Component {
   }
 
   addProduct = () => {
-    let cUser = this.props.currentUser;
-    let cProducts = cUser.products;
+    let products = this.props.products;
     const newProduct = {
       id: Date.now(),
       name: this.state.nameProduct,
       price: this.state.priceProduct
     }
 
-    cProducts = [...cProducts, newProduct];
-    cUser.products = cProducts;
-
-    // axios.post('/currentUser.json', cUser)
-    //   .then(res => console.log(res))
-    //   .catch(err => console.log(err));
+    products = [...products, newProduct];
 
     this.setState({ 
-      cUser: cUser, 
       isAdd: false, 
       nameProduct: '', 
       priceProduct: '' 
     })
-
-    this.props.addProduct(cUser)
-    this.updateProducts(cUser)
-  }
-
-  updateProducts = (cUser) => {
-    let users = this.props.users;
-
-    let user;
-    let index;
+    this.saveToLocalStarage()
+    this.props.addProduct(products);
     
-    for (let i = 0; i < users.length; i++) {
-      
-      if (users[i].login === cUser.login) {
-        user = users[i];
-        index = i;
-        break;
-      }
-      
-    }
-
-    console.log(cUser)
-    console.log(user)
-
-    user = cUser;
-
-    // axios.put('/users.json/' + index, cUser)
-    //   .then(res => console.log(res))
-    //   .catch(err => console.log(err));
-
   }
 
   deleteProduct = (id) => {
-    let cUser = this.props.currentUser;
-    let cProducts = cUser.products;
+    let products = this.props.products;
 
-    
-    cProducts = [...cProducts.filter(p => p.id !== this.state.idProduct)];
-    cUser.products = cProducts;
-    console.log(cUser)
-
-    // axios.delete('/currentUser.json')
-    //   .then(res => console.log(res))
-    //   .catch(err => console.log(err));
+    products = [...products.filter(p => p.id !== this.state.idProduct)];
 
     this.setState({
-      cUser: cUser,
-      isOpenModal: false, 
       idProduct: null,
       isDelete: false
     })
 
-    this.props.deleteProduct(this.state.cUser)
+    this.props.deleteProduct(products)
   }
 
   editProduct = (id) => {
-
-    let cUser = this.props.currentUser;
-    let cProducts = cUser.products;
+    let products = this.props.products;
 
     const currentProduct = this.state.currentProduct;
     let product = {
-      ...cProducts[currentProduct]
+      ...products[currentProduct]
     }
     product.name = this.state.nameProduct;
     product.price = this.state.priceProduct;
-    cProducts[currentProduct] = product;
-    cUser.products = cProducts;
+    products[currentProduct] = product;
     
     this.setState({ 
-      cUser: cUser, 
       isEdit: false
     }) 
 
-    this.props.editProduct(this.state.cUser)
+    this.props.editProduct(products)
+  }
+
+  saveToLocalStarage = () => {
+    const products = JSON.stringify(this.props.products)
+
+    localStorage.setItem('products', products)
   }
 
 
   render() {
+
+    let table = null;
+    if(this.props.products) {
+      table = <div>
+        <Table striped bordered condensed hover>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Price</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              this.props.products && this.props.products.map((p, index) => {
+                return <tr key={p.id}>
+                  <td>{p.id}</td>
+                  <td>{p.name}</td>
+                  <td>{p.price}</td>
+                  <td style={{width: '70px', textAlign: 'center'}}><i style={{marginRight: '5px', cursor: 'pointer'}} onClick={() => this.showEditModal(index)}><i className="fas fa-edit"></i></i><i style={{cursor: 'pointer'}} onClick={() => this.showDeleteModal(p.id)}><i className="fas fa-trash-alt"></i></i></td>
+                </tr>
+              })
+            }
+          </tbody>
+        </Table>
+      </div>
+    } else {
+      table = <h2>Додайте продукт!</h2>
+    }
+
     return (
 
       <div className="container" style={{ marginTop: 50 }}>
@@ -193,8 +179,8 @@ class Products extends Component {
         <Modal isEdit={this.state.isEdit}>
           <div className="addProduct">
             <h2>Edit product</h2>
-            {/* <input type="text" placeholder="Name" value={this.props.currentUser.products[this.state.currentProduct]} onChange={this.changeNameProduct} /> */}
-            {/* <input type="text" placeholder="Price" value={this.props.currentUser.products[this.state.currentProduct].price} onChange={this.changePriceProduct} /> */}
+            <input type="text" placeholder="Name" value={this.state.nameProduct} onChange={this.changeNameProduct} />
+            <input type="text" placeholder="Price" value={this.state.priceProduct} onChange={this.changePriceProduct} />
             <div style={{ display: 'flex', justifyContent: 'center' }}>
               <button className="btn btn-success" onClick={this.editProduct}>Edit</button>
               <button className="btn btn-danger" onClick={this.hideEditModal}>Cancel</button>
@@ -202,28 +188,7 @@ class Products extends Component {
           </div>
         </Modal>
         <button className="btn btn-primary add" onClick={this.showAddModal}>Add product</button>
-        <Table striped bordered condensed hover>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Name</th>
-              <th>Price</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {
-              this.props.currentUser && this.props.currentUser.products && this.props.currentUser.products.map((p, index) => {
-                return <tr key={p.id}>
-                  <td>{p.id}</td>
-                  <td>{p.name}</td>
-                  <td>{p.price}</td>
-                  <td style={{width: '70px', textAlign: 'center'}}><i style={{marginRight: '5px', cursor: 'pointer'}} onClick={() => this.showEditModal(index)}><i className="fas fa-edit"></i></i><i style={{cursor: 'pointer'}} onClick={() => this.showDeleteModal(p.id)}><i className="fas fa-trash-alt"></i></i></td>
-                </tr>
-              })
-            }
-          </tbody>
-        </Table>
+        {table}
 
       </div>
     )
@@ -232,18 +197,19 @@ class Products extends Component {
 
 const mapStateToProps = state => {
   return {
-    currentUser: state.currentUser,
-    users: state.users
+    currentUser: state.user.currentUser,
+    users: state.user.users,
+    products: state.product.products
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    // onAddProduct: cUser => dispatch(actionCreators.addProduct(cUser)),
-    getCurrentUser: cUser => dispatch(actionCreators.getCurrentUser(cUser)),
-    addProduct: cUser => dispatch(actionCreators.addProduct(cUser)),
-    deleteProduct: cUser => dispatch(actionCreators.deleteProduct(cUser)),
-    editProduct: cUser => dispatch(actionCreators.editProduct(cUser))
+    // getCurrentUser: cUser => dispatch(actionCreators.getCurrentUser(cUser)),
+    addProduct: products => dispatch(actionCreators.addProduct(products)),
+    deleteProduct: products => dispatch(actionCreators.deleteProduct(products)),
+    editProduct: products => dispatch(actionCreators.editProduct(products)),
+    getProducts: products => dispatch(actionCreators.getProducts(products))
   }
 }
 

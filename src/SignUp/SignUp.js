@@ -49,18 +49,15 @@ class SignUp extends Component {
       lastName: this.state.lastName,
       login: this.state.login,
       email: this.state.email,
-      pass: this.state.pass,
-      products: []
+      pass: this.state.pass
     }
 
-    // let users = this.props.usr;
-    // let newUsers = [...users, newUser]
+    let users = this.props.usr;
+    let newUsers = [...users, newUser]
 
-    axios.post('/users.json', newUser)
-      .then(res => console.log(res))
-      .catch(err => console.log(err));
+    
 
-    this.props.addUser(newUser);
+    this.props.addUser(newUsers);
   }
 
   render() {
@@ -84,7 +81,7 @@ class SignUp extends Component {
 
 const mapStateToProps = state => {
   return {
-    usr: state.users
+    usr: state.user.users
   }
 }
 

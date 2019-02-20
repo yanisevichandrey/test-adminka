@@ -12,6 +12,11 @@ class SignIn extends Component {
     users: []
   }
 
+  componentDidMount() {
+    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+    this.props.setCurrentUser(currentUser)
+  }
+
   onChangeLogin = (event) => {
     this.setState({ login: event.target.value })
   }
@@ -19,17 +24,6 @@ class SignIn extends Component {
   onChangePass = (event) => {
     this.setState({ pass: event.target.value })
   }
-
-  //  componentDidMount() {
-  //   const data =  this.getUsers();
-  //   this.props.getUsers()
-  //   this.changeUsers(data)
-  // }
-
-  // getUsers = () => {
-  //   axios.get('/users.json')
-  //     .then(res => res.data);
-  // }
 
   changeUsers = (data) => {
     this.setState({users: data})
@@ -44,12 +38,14 @@ class SignIn extends Component {
         console.log(currentUser)
       }
     })
-
-    // axios.post('/currentUser.json', currentUser)
-    //   .then(res => console.log(res))
-    //   .catch(err => console.log(err));
-
+    this.saveToLocalStarage()
     this.props.login(currentUser);
+  }
+
+  saveToLocalStarage = () => {
+    const currentUser = JSON.stringify(this.props.currentUser)
+
+    localStorage.setItem('currentUser', currentUser)
   }
 
   render() {
@@ -68,14 +64,15 @@ class SignIn extends Component {
 
 const mapStateToProps = state => {
   return {
-    usr: state.users
+    usr: state.user.users,
+    currentUser: state.user.currentUser
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
     login: currentUser => dispatch(actionCreators.login(currentUser)),
-    getUsers: users => dispatch(actionCreators.getUsers(users))
+    setCurrentUser: currentUser => dispatch(actionCreators.setCurrentUser(currentUser))
   }
 }
 

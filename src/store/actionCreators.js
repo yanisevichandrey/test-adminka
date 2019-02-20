@@ -36,41 +36,26 @@ export function editProduct(cUser) {
   }
 }
 
-export function getCurrentUser(cUser) {
-  return dispatch => {
-
-    dispatch({
-      type: actionTypes.GET_CURRENT_USER,
-      payload: cUser,
-    })
-
-    axios.get('/currentUser.json')
-      .then(res => res.data)
-      .then((res) => {
-        dispatch({
-          type: actionTypes.SET_CURRENT_USER,
-          payload: res,
-        })
-      })
+export function getProducts(products) {
+  return {
+    type: actionTypes.GET_PRODUCTS,
+    payload: products
   }
 }
 
-export function getUsers(users) {
-  return dispatch => {
-
-    dispatch({
-      type: actionTypes.GET_USERS,
-      payload: users,
-    })
-
-    axios.get('/users.json')
-      .then(res => res.data)
-      .then((res) => {
-        dispatch({
-          type: actionTypes.SET_USERS,
-          payload: res,
-        })
-      })
+export function setCurrentUser(currentUser) {
+  return {
+    type: actionTypes.SET_CURRENT_USER,
+    payload: currentUser
   }
 }
+
+export function onLogout() {
+  return {
+    type: actionTypes.LOGOUT,
+    payload: null
+  }
+}
+
+
 

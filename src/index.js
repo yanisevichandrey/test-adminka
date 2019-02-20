@@ -5,12 +5,12 @@ import App from './App';
 import * as serviceWorker from './serviceWorker';
 import { createStore, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
-import reducer from './store/reducer';
+import { rootReducer } from './reducers/index';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 
 
-const store = createStore(reducer,  composeWithDevTools(
+const store = createStore(rootReducer,  composeWithDevTools(
     applyMiddleware(thunk)
 ));
 

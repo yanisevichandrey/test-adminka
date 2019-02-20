@@ -2,25 +2,27 @@ import React, { Component } from 'react';
 import './Header.css';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import * as actionTypes from '../store/actions';
+import * as actionCreators from '../store/actionCreators';
 
 class Header extends Component {
 
+onLogout = () => {
+    const currentUser = null;
 
+    localStorage.setItem('currentUser', currentUser);
+    this.props.onLogout();
+}
 
     render() {
 
         let loged = null;
         if (this.props.currentUser) {
             loged = <div>
-                <Link className="links" to="/products">Products</Link>
-                <Link className="links" to="/user-info">User info</Link>
-                <Link className="links" onClick={this.props.onLogout} to="/sign-in">Logout</Link>
+                
             </div>
         } else {
             loged = <div>
-                <Link className="links" to="/sign-in">Sign in</Link>
-                <Link className="links" to="/sign-up">Sign up</Link>
+                
             </div>
         }
         return (
@@ -33,7 +35,12 @@ class Header extends Component {
                         <Link className="links" to="/">Home</Link>
                         
                     </div>
-                    {loged}
+                    {/* {loged} */}
+                    <Link className="links" to="/products">Products</Link>
+                    <Link className="links" to="/user-info">User info</Link>
+                    <Link className="links" onClick={this.onLogout} to="/sign-in">Logout</Link>
+                    <Link className="links" to="/sign-in">Sign in</Link>
+                    <Link className="links" to="/sign-up">Sign up</Link>
                 </div>
             </div>
         )
@@ -48,7 +55,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        onLogout: () => dispatch({ type: actionTypes.LOGOUT })
+        onLogout: () => dispatch(actionCreators.onLogout())
     }
 }
 

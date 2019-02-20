@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, IndexRoute, browserHistory } from 'react-router-dom';
+// import { Router, Route, browserHistory } from 'react-router'
 import './App.css';
 import Header from './Header/Header';
 import Home from './Home/Home';
@@ -16,6 +17,21 @@ class App extends Component {
 
   render() {
     return (
+      
+      // <div className="App">
+      // <Header currentUser={this.props.currentUser}/>
+      // <Router >
+        
+      //     <Route path="/" exact component={Home} />
+      //     <Route path="/products" component={Products} />
+      //     <Route path="/not-found" component={NotFoundPage} />
+      //     <Route path="/user-info" component={UserInfo} />
+      //     <Route path="/sign-in" component={SignIn} />
+      //     <Route path="/sign-up" component={SignUp} />
+      //     <Route path="*" component={NotFoundPage} />
+      // </Router>
+      // </div>
+      
       <Router>
         <div className="App">
           <Header />
@@ -25,11 +41,7 @@ class App extends Component {
           <Route path="/user-info" component={UserInfo} />
           <Route path="/sign-in" component={SignIn} />
           <Route path="/sign-up" component={SignUp} />
-          {/* <Route path="/*" component={NotFoundPage} /> */}
-          {/* <Products 
-            addProduct={this.props.addProduct}
-            deleteProduct={this.props.deleteProduct}
-            editProduct={this.props.editProduct}/> */}
+          {/* <Route path="*" component={NotFoundPage} /> */}
         </div>
       </Router>
     );
@@ -38,9 +50,7 @@ class App extends Component {
 
 const mapStateToProps = state => {
   return {
-    currentUser: state.currentUser,
-    isAdd: state.isAdd,
-    isDelete: state.isDelete
+    currentUser: state.user.currentUser
   }
 }
 
