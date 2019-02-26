@@ -1,5 +1,4 @@
 import * as actionTypes from './actions';
-import axios from '../axios-users';
 
 export function addUser(newUser) {
   return {
@@ -47,6 +46,13 @@ export function setCurrentUser(currentUser) {
   return {
     type: actionTypes.SET_CURRENT_USER,
     payload: currentUser
+  }
+}
+
+export function setUsers(users) {
+  return {
+    type: actionTypes.SET_USERS,
+    payload: users
   }
 }
 

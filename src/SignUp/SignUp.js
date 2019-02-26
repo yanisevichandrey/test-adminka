@@ -55,9 +55,14 @@ class SignUp extends Component {
     let users = this.props.usr;
     let newUsers = [...users, newUser]
 
-    
-
+    this.saveToLocalStorage(newUsers);
     this.props.addUser(newUsers);
+  }
+
+  saveToLocalStorage = () => {
+    const users = JSON.stringify(this.props.usr)
+
+    localStorage.setItem('users', users)
   }
 
   render() {
@@ -87,7 +92,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    addUser: newUser => dispatch(actionCreators.addUser(newUser))
+    addUser: newUser => dispatch(actionCreators.addUser(newUser)),
+    setUsers: users => dispatch(actionCreators.setUsers(users))
   }
 }
 

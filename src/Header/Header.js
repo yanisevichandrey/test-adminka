@@ -18,11 +18,14 @@ onLogout = () => {
         let loged = null;
         if (this.props.currentUser) {
             loged = <div>
-                
+                <Link className="links" to="/products">Products</Link>
+                <Link className="links" to="/user-info">User info</Link>
+                <Link className="links" onClick={this.onLogout} to="/sign-in">Logout</Link>
             </div>
         } else {
             loged = <div>
-                
+                <Link className="links" to="/sign-in">Sign in</Link>
+                <Link className="links" to="/sign-up">Sign up</Link>
             </div>
         }
         return (
@@ -32,15 +35,9 @@ onLogout = () => {
                 </div>
                 <div className="menu">
                     <div>
-                        <Link className="links" to="/">Home</Link>
-                        
+                    <Link className="links" to="/">Home</Link>
                     </div>
-                    {/* {loged} */}
-                    <Link className="links" to="/products">Products</Link>
-                    <Link className="links" to="/user-info">User info</Link>
-                    <Link className="links" onClick={this.onLogout} to="/sign-in">Logout</Link>
-                    <Link className="links" to="/sign-in">Sign in</Link>
-                    <Link className="links" to="/sign-up">Sign up</Link>
+                    {loged}
                 </div>
             </div>
         )
@@ -49,7 +46,7 @@ onLogout = () => {
 
 const mapStateToProps = state => {
     return {
-        currentUser: state.currentUser
+        currentUser: state.user.currentUser
     }
 }
 

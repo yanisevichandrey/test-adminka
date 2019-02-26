@@ -20,14 +20,7 @@ const initialState = {
             dateOfCreation: '20.02.2019'
         }
     ],
-    currentUser: {
-        firstName: 'Andrey',
-        lastName: 'Yanisevich',
-        login: 'login',
-        email: 'email',
-        pass: 'pass',
-        dateOfCreation: '18.01.2019'
-    }
+    currentUser: {}
 };
 
 export function userReducer (state = initialState, action) {
@@ -56,6 +49,11 @@ export function userReducer (state = initialState, action) {
             return {
                 ...state,
                 currentUser: action.payload
+            }
+        case actionTypes.SET_USERS:
+            return {
+                ...state,
+                users: action.payload
             }
         default: return state
     }

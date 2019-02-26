@@ -33,7 +33,7 @@ class Products extends Component {
 
   componentDidUpdate(prevState, prevProps) {
     if(prevProps.products !== this.props.products) {
-      this.saveToLocalStarage()
+      this.saveToLocalStorage()
     }
   }
 
@@ -84,7 +84,7 @@ class Products extends Component {
       nameProduct: '', 
       priceProduct: '' 
     })
-    this.saveToLocalStarage()
+    this.saveToLocalStorage()
     this.props.addProduct(products);
     
   }
@@ -120,7 +120,7 @@ class Products extends Component {
     this.props.editProduct(products)
   }
 
-  saveToLocalStarage = () => {
+  saveToLocalStorage = () => {
     const products = JSON.stringify(this.props.products)
 
     localStorage.setItem('products', products)

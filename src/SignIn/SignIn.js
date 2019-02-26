@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './SignIn.css';
 import { connect } from 'react-redux';
 import axios from '../axios-users';
+import { browserHistory } from 'react-router'
 import * as actionCreators from '../store/actionCreators';
 
 class SignIn extends Component {
@@ -12,9 +13,10 @@ class SignIn extends Component {
     users: []
   }
 
-  componentDidMount() {
-    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-    this.props.setCurrentUser(currentUser)
+  componentDidUpdate(prevState, prevProps) {
+    if(prevProps.currentUser !== this.props.currentUser) {
+      this.saveToLocalStorage()
+    }
   }
 
   onChangeLogin = (event) => {
@@ -38,11 +40,12 @@ class SignIn extends Component {
         console.log(currentUser)
       }
     })
-    this.saveToLocalStarage()
+    
     this.props.login(currentUser);
+    this.saveToLocalStorage()
   }
 
-  saveToLocalStarage = () => {
+  saveToLocalStorage = () => {
     const currentUser = JSON.stringify(this.props.currentUser)
 
     localStorage.setItem('currentUser', currentUser)
@@ -72,7 +75,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     login: currentUser => dispatch(actionCreators.login(currentUser)),
-    setCurrentUser: currentUser => dispatch(actionCreators.setCurrentUser(currentUser))
   }
 }
 
