@@ -14,6 +14,12 @@ class SignUp extends Component {
     pass: ''
   }
 
+  componentDidUpdate(prevState, prevProps) {
+    if(prevProps.usr !== this.props.usr) {
+      this.saveToLocalStorage()
+    }
+  }
+
   onChangeFirstName = (event) => {
     this.setState({ firstName: event.target.value })
   }
@@ -55,8 +61,8 @@ class SignUp extends Component {
     let users = this.props.usr;
     let newUsers = [...users, newUser]
 
-    this.saveToLocalStorage(newUsers);
     this.props.addUser(newUsers);
+    this.saveToLocalStorage(newUsers);
   }
 
   saveToLocalStorage = () => {
