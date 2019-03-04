@@ -16,8 +16,6 @@ class App extends Component {
   componentDidMount() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     this.props.setCurrentUser(currentUser);
-    const users = JSON.parse(localStorage.getItem('users'));
-    this.props.setUsers(users)
   }
 
 
